@@ -1,0 +1,30 @@
+# Python cache and artifacts
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build and distribution
+build/
+dist/
+
+# Jupyter and IDE
+.ipynb_checkpoints/
+.vscode/
+
+# Logs and outputs
+*.log
+outputs/data/
+outputs/figures/
+outputs/models/
+outputs/*.db
+
+# OS files
+.DS_Store

@@ -1,0 +1,12 @@
+name: moml-fashion
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pytorch
+  - torchvision
+  - cpuonly
+  - pip:
+      - -r requirements.txt
