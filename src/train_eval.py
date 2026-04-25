@@ -11,6 +11,7 @@ from torch import nn
 @dataclass
 class EvalResults:
     clean_accuracy: float
+    test_accuracy: float
     noisy_accuracy: float
     inference_ms_per_sample: float
 
@@ -29,6 +30,7 @@ def train_one_model(
     learning_rate: float,
     epochs: int,
     device: torch.device,
+    patience: int = 2,
 ) -> float:
     criterion = nn.CrossEntropyLoss()
 
@@ -41,6 +43,7 @@ def train_one_model(
 
     model.to(device)
     best_val_acc = 0.0
+    epochs_without_improvement = 0
 
     for _ in range(epochs):
         model.train()
@@ -55,7 +58,14 @@ def train_one_model(
             optimizer.step()
 
         val_acc = evaluate_accuracy(model, val_loader, device)
-        best_val_acc = max(best_val_acc, val_acc)
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            epochs_without_improvement = 0
+        else:
+            epochs_without_improvement += 1
+
+        if epochs_without_improvement >= patience:
+            break
 
     return best_val_acc
 
@@ -152,16 +162,19 @@ def measure_inference_time_ms(
 
 def full_evaluation(
     model: nn.Module,
+    val_loader: torch.utils.data.DataLoader,
     test_loader: torch.utils.data.DataLoader,
     noise_std: float,
     device: torch.device,
 ) -> EvalResults:
-    clean_acc = evaluate_accuracy(model, test_loader, device)
+    clean_acc = evaluate_accuracy(model, val_loader, device)
+    test_acc = evaluate_accuracy(model, test_loader, device)
     noisy_acc = evaluate_with_noise(model, test_loader, noise_std, device)
     inference_ms = measure_inference_time_ms(model, test_loader, device)
 
     return EvalResults(
         clean_accuracy=clean_acc,
+        test_accuracy=test_acc,
         noisy_accuracy=noisy_acc,
         inference_ms_per_sample=inference_ms,
     )

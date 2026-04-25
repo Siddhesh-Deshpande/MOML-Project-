@@ -127,16 +127,23 @@ def run_optimization(config: dict[str, Any]) -> pd.DataFrame:
             device=device,
         )
 
-        eval_results = full_evaluation(model, loaders.test_loader, noise_std=noise_std, device=device)
+        eval_results = full_evaluation(
+            model,
+            val_loader=loaders.val_loader,
+            test_loader=loaders.test_loader,
+            noise_std=noise_std,
+            device=device,
+        )
         model_params = count_parameters(model)
 
         trial.set_user_attr("trial_id", make_trial_id(trial.number))
-        trial.set_user_attr("accuracy", eval_results.clean_accuracy)
+        trial.set_user_attr("val_accuracy", eval_results.clean_accuracy)
+        trial.set_user_attr("test_accuracy", eval_results.test_accuracy)
         trial.set_user_attr("noisy_accuracy", eval_results.noisy_accuracy)
         trial.set_user_attr("inference_ms", eval_results.inference_ms_per_sample)
         trial.set_user_attr("model_params", model_params)
 
-        # We convert maximize-accuracy to minimization by optimizing 1 - accuracy.
+        # We convert maximize-accuracy to minimization by optimizing 1 - validation accuracy.
         return (1.0 - eval_results.clean_accuracy, eval_results.inference_ms_per_sample, float(model_params))
 
     study.optimize(
@@ -159,7 +166,9 @@ def run_optimization(config: dict[str, Any]) -> pd.DataFrame:
                 "obj_accuracy_min": float(trial.values[0]),
                 "obj_inference_ms": float(trial.values[1]),
                 "obj_model_params": float(trial.values[2]),
-                "accuracy": float(trial.user_attrs.get("accuracy", 1.0 - float(trial.values[0]))),
+                "accuracy": float(trial.user_attrs.get("val_accuracy", 1.0 - float(trial.values[0]))),
+                "val_accuracy": float(trial.user_attrs.get("val_accuracy", 1.0 - float(trial.values[0]))),
+                "test_accuracy": float(trial.user_attrs.get("test_accuracy", 0.0)),
                 "noisy_accuracy": float(trial.user_attrs.get("noisy_accuracy", 0.0)),
                 "inference_ms": float(trial.user_attrs.get("inference_ms", trial.values[1])),
                 "model_params": int(trial.user_attrs.get("model_params", trial.values[2])),

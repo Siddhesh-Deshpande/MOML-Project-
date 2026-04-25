@@ -18,12 +18,12 @@ def main() -> None:
         raise ValueError("Pareto front is empty. Run optimization and analysis first.")
 
     # Representative picks: best accuracy, fastest, smallest, and balanced score.
-    best_acc = df.sort_values("accuracy", ascending=False).head(1)
+    best_acc = df.sort_values("val_accuracy", ascending=False).head(1)
     fastest = df.sort_values("inference_ms", ascending=True).head(1)
     smallest = df.sort_values("model_params", ascending=True).head(1)
 
-    norm = df[["accuracy", "inference_ms", "model_params"]].copy()
-    norm["accuracy"] = 1.0 - (norm["accuracy"] - norm["accuracy"].min()) / (norm["accuracy"].max() - norm["accuracy"].min() + 1e-12)
+    norm = df[["val_accuracy", "inference_ms", "model_params"]].copy()
+    norm["val_accuracy"] = 1.0 - (norm["val_accuracy"] - norm["val_accuracy"].min()) / (norm["val_accuracy"].max() - norm["val_accuracy"].min() + 1e-12)
     norm["inference_ms"] = (norm["inference_ms"] - norm["inference_ms"].min()) / (norm["inference_ms"].max() - norm["inference_ms"].min() + 1e-12)
     norm["model_params"] = (norm["model_params"] - norm["model_params"].min()) / (norm["model_params"].max() - norm["model_params"].min() + 1e-12)
     balance_score = norm.mean(axis=1)

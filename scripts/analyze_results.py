@@ -11,6 +11,12 @@ from src.pareto import extract_pareto_dataframe, plot_parallel_coordinates, plot
 from src.utils import ensure_dir, write_json
 
 
+def _min_max_normalize(array: np.ndarray) -> np.ndarray:
+    mins = np.min(array, axis=0)
+    maxs = np.max(array, axis=0)
+    return (array - mins) / (maxs - mins + 1e-12)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Analyze Pareto front and export plots/metrics")
     parser.add_argument("--trials", type=str, default="outputs/all_trials.csv", help="CSV file from optimization")
@@ -35,9 +41,10 @@ def main() -> None:
 
     minimization_points = pareto_df[["obj_accuracy_min", "obj_inference_ms", "obj_model_params"]].to_numpy()
     if len(minimization_points) > 0:
-        reference_point = np.max(minimization_points, axis=0) * 1.1
-        hv = approximate_hypervolume(minimization_points, reference_point)
-        spacing = spacing_metric(minimization_points)
+        normalized_points = _min_max_normalize(minimization_points)
+        reference_point = np.ones(normalized_points.shape[1]) * 1.1
+        hv = approximate_hypervolume(normalized_points, reference_point)
+        spacing = spacing_metric(normalized_points)
     else:
         hv = 0.0
         spacing = 0.0
@@ -45,8 +52,8 @@ def main() -> None:
     metrics_payload = {
         "num_trials": int(len(df)),
         "num_pareto_points": int(len(pareto_df)),
-        "hypervolume_approx": float(hv),
-        "spacing": float(spacing),
+        "hypervolume_approx_normalized": float(hv),
+        "spacing_normalized": float(spacing),
     }
 
     write_json(Path(outdir) / "metrics_summary.json", metrics_payload)

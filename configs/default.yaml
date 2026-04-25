@@ -4,27 +4,27 @@ output_dir: outputs
 dataset:
   name: fashion-mnist
   data_dir: data
-  train_subset: 12000
-  val_subset: 3000
+  train_subset: 8000
+  val_subset: 2000
   test_subset: 5000
   num_workers: 2
 
 search_space:
-  n_conv_layers: [1, 3]
-  channels_options: [16, 32, 48, 64]
+  n_conv_layers: [1, 2]
+  channels_options: [8, 16, 24, 32, 48]
   n_fc_layers: [1, 2]
-  hidden_units_options: [64, 128, 256]
-  learning_rate: [1.0e-5, 1.0e-2]
-  batch_size_options: [16, 32, 64]
-  epochs: [3, 8]
-  dropout: [0.0, 0.5]
+  hidden_units_options: [32, 64, 128, 256]
+  learning_rate: [1.0e-4, 3.0e-3]
+  batch_size_options: [32, 64, 128]
+  epochs: [2, 5]
+  dropout: [0.0, 0.4]
   optimizer_options: [adam, sgd]
   input_resolution_options: [16, 28]
 
 optimization:
   framework: optuna
   sampler: nsga2
-  n_trials: 30
+  n_trials: 60
   timeout_seconds: 7200
   study_name: fashion_mnist_moo
   storage: sqlite:///outputs/fashion_mnist_moo.db
