@@ -1,0 +1,6 @@
+{
+  "num_trials": 60,
+  "num_pareto_points": 16,
+  "hypervolume_approx_normalized": 1.1656365600000003,
+  "spacing_normalized": 0.1145473394395906
+}
