@@ -110,9 +110,3 @@ Generated under `outputs/`:
 - `figures/pareto_2d.png`
 - `figures/pareto_3d.png`
 - `figures/parallel_coordinates.png`
-
-## Notes for Report
-
-- Hypervolume is approximated with Monte Carlo (`approximate_hypervolume` in [src/metrics.py](src/metrics.py)).
-- Spacing metric is included.
-- A template is provided in [reports/report_template.md](reports/report_template.md).
