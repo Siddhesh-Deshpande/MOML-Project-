@@ -42,8 +42,8 @@ All ranges are configurable in [configs/default.yaml](configs/default.yaml).
 - [src/pareto.py](src/pareto.py): Pareto extraction and visualization
 - [src/metrics.py](src/metrics.py): Hypervolume/spacing/GD utilities
 
-## Environment Setup
-
+## Environment Setup (For local execution)
+ 
 If you already have a conda env named `vrenv`, install dependencies there:
 
 ```bash
@@ -60,7 +60,24 @@ conda activate moml-fashion
 
 ## How to Run
 
-### One-Command Pipeline
+The project can be run locally or on Kaggle.
+
+### 1. Running the Notebook on Kaggle
+
+a. Compress the project directory into a `.zip` file.
+
+b. Go to Kaggle and create a new Notebook.
+
+c. Upload the `.zip` file as a Dataset on Kaggle and attach it to the notebook.
+
+d. Enable GPU acceleration: 
+- Set **Accelerator** to **GPU (T4 x2)** in the notebook settings.
+
+e. Import **Image_Classification_MOO.ipynb** in Kaggle.
+
+f. Run all cells in the notebook.
+
+### 2. One-Command Pipeline
 
 ```bash
 bash scripts/run_pipeline.sh
