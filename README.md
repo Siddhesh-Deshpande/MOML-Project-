@@ -32,15 +32,18 @@ All ranges are configurable in [configs/default.yaml](configs/default.yaml).
 ## Project Structure
 
 - [configs/default.yaml](configs/default.yaml): Search ranges and experiment settings
+- [scripts/run_pipeline.sh](scripts/run_pipeline.sh): End-to-end execution pipeline
 - [scripts/run_optimization.py](scripts/run_optimization.py): Runs NSGA-II optimization loop
 - [scripts/analyze_results.py](scripts/analyze_results.py): Extracts Pareto front, plots, and metrics
 - [scripts/select_solutions.py](scripts/select_solutions.py): Picks at least 4 representative Pareto points
+- [src/config.py](src/config.py): Configuration loading
 - [src/data.py](src/data.py): Fashion-MNIST loading/splitting/subsampling
 - [src/model.py](src/model.py): Dynamic CNN generated from decision variables
 - [src/train_eval.py](src/train_eval.py): Train + evaluate (clean, noisy, inference timing)
 - [src/moo.py](src/moo.py): Optuna objective + trial logging
 - [src/pareto.py](src/pareto.py): Pareto extraction and visualization
 - [src/metrics.py](src/metrics.py): Hypervolume/spacing/GD utilities
+- [src/utils.py](src/utils.py): Helper functions
 
 ## Environment Setup (For local execution)
  
